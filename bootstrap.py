@@ -1,20 +1,17 @@
 #!/usr/bin/env python
 
-import sys, os
+import sys
 import subprocess
 from subprocess import STDOUT
 import processes
 
 class InstallationManager():
-    devnull = open(os.devnull, 'w')
 
-    def pip_install(self, moduel):
-        try:
-            subprocess.check_call("pip install {module}".format(module=module), shell=True)
-        except subprocess.CalledProcessError, e:
-            print "failed to install {module}".format(module=module), e.output
+    def pip_install(self, module):
+        processes.shell_run("pis install {module}".format(module=module))
 
     def installed(self, util):
+        shell_run("command -v {util}".format(util=util), supress=True)
         try:
             subprocess.check_call("command -v {util}".format(util=util)
                 , shell=True
@@ -65,4 +62,4 @@ if hasattr(sys, 'real_prefix'):
     print "has venv"
 else:
     installer = InstallationManager()
-    #installer.install("virtualenv")
+    installer.install("virtualenv")
