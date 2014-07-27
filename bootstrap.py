@@ -19,12 +19,12 @@ class InstallationManager():
 
     def install_curl(self):
         actions = {
-              'cygwin': 'need to install curl'
-            , 'darwin': 'brew install it'
-            , 'centos': 'install something'
-            , 'redhat': 'install something'
-            , 'ubuntu': 'install something'
-            , 'fedora': 'install something'
+              'cygwin': "echo Run cygwin setup.exe (in you downloads directory?) and search for 'curl' in packages."
+            , 'darwin': 'brew install curl'
+            , 'centos': 'yum install curl'
+            , 'redhat': 'yum install curl'
+            , 'fedora': 'yum install curl'
+            , 'ubuntu': 'apt-get install curl'
         }
 
         plat_key = sys.platform
@@ -35,7 +35,7 @@ class InstallationManager():
             action = match_action_from_description(actions)
 
         if action:
-            print action
+            processes.shell_run(action)
         else:
             print "Couldn't find {key}".format(key=plat_key)
 
