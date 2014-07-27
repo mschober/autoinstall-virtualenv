@@ -7,20 +7,19 @@ import processes
 
 class InstallationManager():
 
+    def install_easy_install(self):
+        processes.stream_run('https://bootstrap.pypa.io/ez_setup.py')
+
+    def execute_install(self, util, script):
+        if hasattr(InstallationManager, script):
+            exec "self.{fxn}()".format(fxn=script)
+        else:
+            processes.shell_run(script)
     def pip_install(self, module):
-        processes.shell_run("pis install {module}".format(module=module))
+        processes.shell_run("pip install {module}".format(module=module))
 
     def installed(self, util):
-        shell_run("command -v {util}".format(util=util), supress=True)
-        try:
-            subprocess.check_call("command -v {util}".format(util=util)
-                , shell=True
-                , stdout=self.devnull
-                , stderr=STDOUT
-            )
-        except subprocess.CalledProcessError, e:
-            return False
-        return True
+        return processes.shell_run("command -v {util}".format(util=util), suppress=True) == 0
 
     def install_dependencies(self, util):
         deps = {
@@ -31,9 +30,6 @@ class InstallationManager():
         if util in deps.keys():
             self.install(deps[util])
 
-    def install_easy_install(self):
-        processes.stream_run('https://bootstrap.pypa.io/ez_setup.py')
-
     def install(self, util):
         install_scripts = {
               "pip": "easy_install pip"
@@ -41,22 +37,11 @@ class InstallationManager():
             , "easy_install": "install_easy_install"
         }
 
-        if self.installed(util):
-            print util + " is already installed"
-        else:
-            print "installing " + util
+        if not self.installed(util) and util in install_scripts:
             self.install_dependencies(util)
-            if util in install_scripts:
-                if hasattr(InstallationManager, install_scripts[util]):
-                    print 'yup'
-                    exec "self.{fxn}()".format(fxn=install_scripts[util])
-                else:
-                    try:
-                        subprocess.check_output(install_scripts[util], shell=True)
-                    except subprocess.CalledProcessError, e:
-                        print "failed to run installer script", e.output
-            else:
-                print util + " is not currently supported for installing"
+            self.execute_install(util, install_scripts[util])
+        else:
+            print util, "is already installed!"
 
 if hasattr(sys, 'real_prefix'):
     print "has venv"

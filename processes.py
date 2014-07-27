@@ -23,12 +23,13 @@ def run_from_stream(script_stream):
 def shell_run(script_string, err_msg="Failed to execute cmd:", suppress=False):
     args = { 'shell': True }
     supress_args = { 'stdout': devnull, 'stderr': STDOUT }
+    return_code = 0
 
     if suppress:
         args.update(supress_args)
 
     try:
-        return subprocess.check_call(script_string, **args)
+        return_code = subprocess.check_call(script_string, **args)
     except subprocess.CalledProcessError, e:
         print """
 {err_msg}
@@ -36,3 +37,6 @@ def shell_run(script_string, err_msg="Failed to execute cmd:", suppress=False):
 {cmd}
 {header}
 """.format(err_msg=err_msg, header=50*"#", cmd=script_string)
+        return_code = e.returncode
+    finally:
+        return return_code
