@@ -19,7 +19,7 @@ class InstallationManager():
 
     def install_curl(self):
         actions = {
-              'cygwin': "echo Run cygwin setup.exe (in you downloads directory?) and search for 'curl' in packages."
+              'cygwin': "echo Run cygwin setup.exe \(in you downloads directory?\) and search for 'curl' in packages."
             , 'darwin': 'brew install curl'
             , 'centos': 'yum install curl'
             , 'redhat': 'yum install curl'
