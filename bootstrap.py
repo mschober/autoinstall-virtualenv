@@ -32,7 +32,7 @@ class InstallationManager():
         if plat_key in actions.keys():
             action = actions[plat_key]
         else:
-            action = match_action_from_description(actions)
+            action = self.match_action_from_description(actions)
 
         if action:
             print action
